@@ -2,6 +2,7 @@ package pages;
 
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 
 public class SignInPage extends BasePage {
@@ -12,7 +13,6 @@ public class SignInPage extends BasePage {
     private final By emailInput = By.id("email");
     private final By passwordInput = By.id("password");
     private final By signInSubmitButton = By.cssSelector("button[class='ubsStyle']");
-    private final By result = null;
     private final By errorPassword = By.cssSelector("div[id='pass-err-msg'] div[class='margining ng-star-inserted']");
     private final By errorEmail = By.cssSelector("app-error[controlname='email'] div[class='margining ng-star-inserted']");
 
@@ -65,6 +65,27 @@ public class SignInPage extends BasePage {
     public boolean isSubmitEnabled() {
         String disabled = getAttribute(signInSubmitButton, "disabled");
         return disabled == null || disabled.isEmpty();
+    }
+
+    public String getEmailErrorMessage() {
+        return getText(errorEmail);
+    }
+
+    public String getPasswordErrorMessage() {
+        return getText(errorPassword);
+    }
+
+    public void blurFields() {
+        driver.switchTo().activeElement().sendKeys(Keys.TAB);
+        driver.switchTo().activeElement().sendKeys(Keys.TAB);
+    }
+
+    public void scrollToSubmit() {
+        scrollIntoView(signInSubmitButton);
+    }
+
+    public void jsSubmit() {
+        jsClick(signInSubmitButton);
     }
 
 }

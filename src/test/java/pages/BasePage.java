@@ -1,21 +1,22 @@
 package pages;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.TimeoutException;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+
 import java.time.Duration;
 
 public abstract class BasePage {
     protected WebDriver driver;
     protected WebDriverWait wait;
     private static final int TIMEOUT = 7;
+    protected JavascriptExecutor js;
 
     public BasePage(WebDriver driver) {
         this.driver = driver;
         this.wait = new WebDriverWait(driver, Duration.ofSeconds(TIMEOUT));
+        this.js = (JavascriptExecutor) driver;
+
     }
 
     public void goTo(String url) {
@@ -36,19 +37,6 @@ public abstract class BasePage {
 
     protected WebElement waitClickable(By locator) {
         return wait.until(ExpectedConditions.elementToBeClickable(locator));
-    }
-
-    protected boolean waitInvisibility(By locator) {
-        return wait.until(ExpectedConditions.invisibilityOfElementLocated(locator));
-    }
-
-    protected boolean textPresent(By locator, String text) {
-        try {
-            return wait.until(ExpectedConditions.textToBePresentInElementLocated(locator, text));
-
-        } catch (TimeoutException e) {
-            return false;
-        }
     }
 
     protected void click(By locator) {
@@ -81,4 +69,22 @@ public abstract class BasePage {
         }
     }
 
+    protected void scrollIntoView(By locator) {
+        js.executeScript("arguments[0].scrollIntoView({block:'center'});", waitVisible(locator));
+    }
+
+    protected void jsClick(By locator) {
+        js.executeScript("arguments[0].click();", waitVisible(locator));
+    }
+
+    protected void clickBody() {
+        js.executeScript("document.body.click();");
+    }
+
+
 }
+
+
+
+
+

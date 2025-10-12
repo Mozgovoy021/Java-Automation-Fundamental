@@ -1,5 +1,6 @@
-package Unit_Testing;
+package tests;
 
+import Unit_Testing.Rectangle;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

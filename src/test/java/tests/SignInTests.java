@@ -3,8 +3,8 @@ package tests;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvFileSource;
 import org.junit.jupiter.params.provider.CsvSource;
-import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import pages.SignInPage;
@@ -17,8 +17,9 @@ public class SignInTests {
     public void setup() {
         WebDriverManager.chromedriver().setup();
         driver = new ChromeDriver();
-        driver.manage().window().maximize();
         signInPage = new SignInPage(driver);
+        driver.manage().window().maximize();
+
     }
 
     @Test
@@ -38,27 +39,43 @@ public class SignInTests {
     }
 
     // Пароль не ховав, бо інакше не передам вам креди
-    @Test
-    @DisplayName("Verify successful login with valid credentials")
-    void verifySuccessfulLogin() {
+    @ParameterizedTest(name = "[{index}] valid login -> {0}")
+    @CsvSource({
+            "dehoye6184@aupvs.com,Test55555@",
+            "dehoye6184@aupvs.com,Test55555@" // Дубль бо лінь створювати ще один реальний акаунт
+    })
+    @DisplayName("Login positive: valid email/password pairs")
+    void verifySuccessfulLogin(String email, String password) {
         signInPage.openHome();
         signInPage.clickSignIn();
-        signInPage.login("dehoye6184@aupvs.com", "Test55555@");
-        signInPage.submit();
+        signInPage.login(email, password);
+        signInPage.scrollToSubmit();
+        signInPage.jsSubmit();
+
         Assertions.assertEquals("https://www.greencity.cx.ua/#/ubs", signInPage.currentUrl());
     }
 
-    @ParameterizedTest
-    @CsvSource({"Email, Password", "Email2, Password2",})
-    @DisplayName("Parameterized test – invalid email/password pairs show errors")
-    void verifyInvalidCredentials(String email, String password) {
+    @ParameterizedTest(name = "[{index}] invalid -> {0} / {1}")
+    @CsvFileSource(resources = "/login-negative.csv", numLinesToSkip = 1)
+    @DisplayName("Login negative: exact error messages (CsvFileSource)")
+    void verifyInvalidCredentials(String email,
+                                  String password,
+                                  String expectedEmailError,
+                                  String expectedPasswordError) {
         signInPage.openHome();
         signInPage.clickSignIn();
         signInPage.typeEmail(email);
         signInPage.typePassword(password);
-        driver.switchTo().activeElement().sendKeys(Keys.TAB);
-        signInPage.isSubmitEnabled();
-        Assertions.assertTrue(signInPage.isEmailErrorVisible() || signInPage.isPasswordErrorVisible());
+        signInPage.blurFields();
+
+        Assertions.assertFalse(signInPage.isSubmitEnabled(), "Submit should be disabled for invalid input");
+
+        if (!expectedEmailError.isEmpty()) {
+            Assertions.assertEquals(expectedEmailError, signInPage.getEmailErrorMessage());
+        }
+        if (!expectedPasswordError.isEmpty()) {
+            Assertions.assertEquals(expectedPasswordError, signInPage.getPasswordErrorMessage());
+        }
     }
 
     @Test
@@ -76,15 +93,15 @@ public class SignInTests {
         signInPage.clickSignIn();
         signInPage.typeEmail("WrongEmail");
         signInPage.typePassword("Error!");
-        driver.switchTo().activeElement().sendKeys(Keys.TAB);
+        signInPage.blurFields();
         Assertions.assertTrue(signInPage.isEmailErrorVisible());
         Assertions.assertTrue(signInPage.isPasswordErrorVisible());
     }
-
 
     @AfterEach
     public void teardown() {
         driver.quit();
     }
+
 
 }

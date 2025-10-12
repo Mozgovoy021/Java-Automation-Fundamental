@@ -14,10 +14,12 @@
         <wdm.version>5.9.2</wdm.version>
         <slf4j.version>2.0.13</slf4j.version>
         <assertj.version>3.26.3</assertj.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
 
     <dependencies>
-        <!-- ✅ JUnit 5 -->
+        <!-- JUnit 5 -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
@@ -25,28 +27,21 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- ✅ Selenium WebDriver -->
+        <!-- Selenium WebDriver -->
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-java</artifactId>
             <version>${selenium.version}</version>
         </dependency>
 
-        <!-- ✅ DevTools для Chrome 140 (останній доступний) -->
-        <dependency>
-            <groupId>org.seleniumhq.selenium</groupId>
-            <artifactId>selenium-devtools-v140</artifactId>
-            <version>${selenium.version}</version>
-        </dependency>
-
-        <!-- ✅ WebDriverManager -->
+        <!-- WebDriverManager -->
         <dependency>
             <groupId>io.github.bonigarcia</groupId>
             <artifactId>webdrivermanager</artifactId>
             <version>${wdm.version}</version>
         </dependency>
 
-        <!-- ✅ Логування -->
+        <!-- Логування -->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
@@ -54,7 +49,7 @@
             <scope>runtime</scope>
         </dependency>
 
-        <!-- ✅ AssertJ для асертів -->
+        <!-- AssertJ -->
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
@@ -65,7 +60,6 @@
 
     <build>
         <plugins>
-            <!-- Java 21 -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -74,14 +68,15 @@
                     <release>21</release>
                 </configuration>
             </plugin>
-
-            <!-- JUnit 5 -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.2.5</version>
                 <configuration>
                     <useModulePath>false</useModulePath>
+                    <systemPropertyVariables>
+                        <file.encoding>UTF-8</file.encoding>
+                    </systemPropertyVariables>
                 </configuration>
             </plugin>
         </plugins>
