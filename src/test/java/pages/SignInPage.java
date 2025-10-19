@@ -1,6 +1,5 @@
 package pages;
 
-
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
@@ -21,7 +20,7 @@ public class SignInPage extends BasePage {
     }
 
     public void openHome() {
-        goTo("https://www.greencity.cx.ua/");
+        goTo(System.getProperty("baseUrl", "https://www.greencity.cx.ua/"));
     }
 
     public void clickSignIn() {

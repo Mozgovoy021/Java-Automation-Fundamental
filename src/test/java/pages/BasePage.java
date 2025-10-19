@@ -9,12 +9,12 @@ import java.time.Duration;
 public abstract class BasePage {
     protected WebDriver driver;
     protected WebDriverWait wait;
-    private static final int TIMEOUT = 7;
     protected JavascriptExecutor js;
 
     public BasePage(WebDriver driver) {
         this.driver = driver;
-        this.wait = new WebDriverWait(driver, Duration.ofSeconds(TIMEOUT));
+        long timeout = Long.parseLong(System.getProperty("timeoutSeconds", "10"));
+        this.wait = new WebDriverWait(driver, Duration.ofSeconds(timeout));
         this.js = (JavascriptExecutor) driver;
 
     }
