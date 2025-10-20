@@ -8,11 +8,15 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import pages.SignInPage;
 import services.AuthService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+
 public class SignInTests extends BaseTest {
 
+    private static final Logger log = LoggerFactory.getLogger(SignInTests.class);
     private SignInPage signInPage;
 
     @BeforeEach
@@ -54,7 +58,8 @@ public class SignInTests extends BaseTest {
 
         assertFalse(page.isSubmitEnabled(), "Submit should be disabled for invalid input");
         if (!td.expectedEmailError().isEmpty()) assertEquals(td.expectedEmailError(), page.getEmailErrorMessage());
-        if (!td.expectedPasswordError().isEmpty()) assertEquals(td.expectedPasswordError(), page.getPasswordErrorMessage());
+        if (!td.expectedPasswordError().isEmpty())
+            assertEquals(td.expectedPasswordError(), page.getPasswordErrorMessage());
     }
 
     @Test
